@@ -1,15 +1,17 @@
 # Windshield Doctor — Connect Resend to the Vercel contact form
 
-**Contact form delivery inbox:** `info.Windshielddoctorautoglass@gmail.com`
+**Contact form primary delivery inbox:** `info.Windshielddoctorautoglass@gmail.com`  
+**CC copy of each quote (including photos):** `Windshielddoctorautoglass@gmail.com`  
+**Public website contact email:** `Windshielddoctorautoglass@gmail.com`
 
-This address is already configured in `api/quote.mjs`. It is the **recipient** of incoming quote requests, not the email address Resend sends **from**. You do not need to create an inbox on a new domain. Keep using Gmail to read and reply to requests.
+Both Gmail recipients are configured in `api/quote.mjs` (primary **To** and secondary **CC**). They are not the email address Resend sends **from**. Every successful request includes the full message and attachments for both inboxes; customer replies continue to use the submitted email as `Reply-To`. The manual email-app fallback addresses the public inbox and CCs the internal inbox.
 
 ## Before you start
 
 You'll need:
 - A Vercel account and this website deployed as a Vercel project.
 - A Resend account (you may reuse an existing Resend account).
-- **A verified sending domain (`windshielddoctorautoglass.com` is already verified in your Resend account). A Gmail address and the free `*.vercel.app` website address cannot serve as your Resend sender domain.
+- **A verified sending domain:** `windshielddoctorautoglass.com` (already verified in your Resend account). A Gmail address and the free `*.vercel.app` website address cannot serve as your Resend sender domain.
 - Access to that domain's **DNS settings** (wherever the DNS is hosted, such as your registrar or DNS provider).
 
 ## A. Connect a sending domain to Resend
@@ -20,7 +22,7 @@ You'll need:
 4. Open the DNS management page of the provider controlling your domain's DNS. Add the records as directed. Existing records that handle the domain's incoming mail should not be deleted or changed; if you see an MX record, be sure it is the specifically named record Resend requests for sending/return-path rather than replacing the domain's normal inbound MX records.
 5. Save the records. Return to Resend and click **I've added the records** / verify. Wait until the domain is **Verified** for sending. DNS updates may take time to propagate.
 
-**Your verified domain:** `windshielddoctorautoglass.com`. Use this sender: `Windshield Doctor <quotes@windshielddoctorautoglass.com>`. The receiving inbox remains `info.Windshielddoctorautoglass@gmail.com`.
+**Your verified domain:** `windshielddoctorautoglass.com`. Use this sender: `Windshield Doctor <quotes@windshielddoctorautoglass.com>`. The primary receiving inbox remains `info.Windshielddoctorautoglass@gmail.com`, with `Windshielddoctorautoglass@gmail.com` copied on each request.
 
 ## B. Create a Resend API key
 
@@ -40,7 +42,7 @@ You'll need:
    | `RESEND_API_KEY` | The private `re_...` API key copied from Resend |
    | `RESEND_FROM_EMAIL` | `Windshield Doctor <quotes@windshielddoctorautoglass.com>` |
 
-4. Click **Save**. Do not create a `RESEND_TO_EMAIL` variable: the recipient `info.Windshielddoctorautoglass@gmail.com` is already set in the website's server function.
+4. Click **Save**. Do not create a `RESEND_TO_EMAIL` variable: both Gmail recipients are already set in the website's server function.
 5. Go to **Deployments**, open the most recent deployment, and select **Redeploy**. Existing deployments do not automatically receive newly added environment variables.
 
 ## D. Deploy this updated ZIP to fix the quote form
@@ -55,7 +57,7 @@ You'll need:
 
 1. Visit your deployed website at `/contact.html`.
 2. Fill out a **test** quote request with your name, phone, email, service, vehicle, optional VIN, and one optional photo. Click **Send quote request**.
-3. Check **info.Windshielddoctorautoglass@gmail.com** in Gmail, including the Spam folder.
+3. Check **both** `info.Windshielddoctorautoglass@gmail.com` (To) and `Windshielddoctorautoglass@gmail.com` (CC), including Spam, for the same quote and photo attachments.
 4. If the page reports an HTTP error, note the status number. **404** means the function is missing, **503** means the environment variables are missing for that deployment, and **502** usually means Resend rejected the email or the outbound request failed. Check **Vercel → Logs** for `/api/quote` and **Resend → Logs/Emails** for more details.
 5. Open the notification. Reply should go to the **customer's submitted email address**, thanks to its `Reply-To` header.
 

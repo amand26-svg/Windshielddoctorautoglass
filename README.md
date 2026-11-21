@@ -29,12 +29,12 @@ folder, then open http://localhost:8080. The website itself does not need Python
 ## Contact and quote behaviour (Vercel + Resend)
 
 - Call buttons use `tel:+12265264555`.
-- Direct quote emails go to **info.Windshielddoctorautoglass@gmail.com** once Resend is configured.
+- Direct quote emails go **To: info.Windshielddoctorautoglass@gmail.com** and **CC: Windshielddoctorautoglass@gmail.com** once Resend is configured. All website-visible contact emails and clickable `mailto:` links use **Windshielddoctorautoglass@gmail.com**.
 - The form now includes an **optional VIN** input (valid 17-character VIN when filled), plus customer, service, vehicle and damage details.
 - Submissions go through the Vercel Function `api/quote.mjs`, which sends mail using Resend. The Resend key is **never** sent to browsers or bundled in site assets.
 - **Before deployment:** follow **[VERCEL-EMAIL-SETUP.md](VERCEL-EMAIL-SETUP.md)** to configure `RESEND_API_KEY` and `RESEND_FROM_EMAIL` in Vercel. Without that configuration the direct email send does not work and shows a fallback message.
 - The site displays a confirmation only after Resend accepts the request; no appointment is automatically booked.
-- Failed automatic sends provide **Open email app** and **Copy message** options. Photos can be shared separately by email, not through the form.
+- Failed automatic sends provide **Open email app** and **Copy message** options. Attachments are included with successful automated requests (up to 3 images). Photos must be attached manually when using the fallback email-app option.
 - Directions open Google Maps for 523 Vidal Street South, Sarnia, ON N7T 2V7.
 - The interactive map is loaded only after selecting **Load map**.
 

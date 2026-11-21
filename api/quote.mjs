@@ -1,5 +1,6 @@
 /** Windshield Doctor quote endpoint — Vercel Web Handler (no dependencies). */
 const SHOP_EMAIL = 'info.Windshielddoctorautoglass@gmail.com';
+const QUOTE_COPY_EMAIL = 'Windshielddoctorautoglass@gmail.com';
 const SERVICES = new Set([
   'Windshield repair', 'Windshield replacement', 'Side and rear glass',
   'Not sure — I need advice'
@@ -113,6 +114,7 @@ async function handleQuote(request) {
         body: JSON.stringify({
           from,
           to: [SHOP_EMAIL],
+          cc: [QUOTE_COPY_EMAIL],
           reply_to: email,
           subject: `New auto glass quote — ${service}`,
           text: lines.join('\n'),

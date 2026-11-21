@@ -197,7 +197,7 @@
       success.hidden = true;
       fallback.hidden = false;
       document.querySelector('#email-preview').textContent = message;
-      document.querySelector('#open-email').href = 'mailto:info.Windshielddoctorautoglass@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(message);
+      document.querySelector('#open-email').href = 'mailto:Windshielddoctorautoglass@gmail.com?cc=' + encodeURIComponent('info.Windshielddoctorautoglass@gmail.com') + '&subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(message);
       document.querySelector('#copy-status').textContent = '';
       fallback.focus({ preventScroll: true });
       fallback.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'center' });
@@ -285,7 +285,7 @@
       try {
         if (!navigator.clipboard) throw new Error('Clipboard unavailable');
         await navigator.clipboard.writeText(message);
-        document.querySelector('#copy-status').textContent = 'Copied. Paste this into an email to info.Windshielddoctorautoglass@gmail.com.';
+        document.querySelector('#copy-status').textContent = 'Copied. Paste this into an email to Windshielddoctorautoglass@gmail.com.';
       } catch (_) {
         const range = document.createRange(); range.selectNodeContents(document.querySelector('#email-preview'));
         const selection = window.getSelection(); selection.removeAllRanges(); selection.addRange(range);

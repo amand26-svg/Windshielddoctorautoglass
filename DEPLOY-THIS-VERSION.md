@@ -24,7 +24,7 @@ Open a terminal inside the folder that contains `vercel.json` and `public/`, the
 
 ## Email
 
-To enable direct quote emails to `info.Windshielddoctorautoglass@gmail.com`, set `RESEND_API_KEY` and `RESEND_FROM_EMAIL` in the Vercel project Environment Variables and redeploy. The FROM address must be on a verified Resend sending domain; the TO address is already configured. Refer to `VERCEL-EMAIL-SETUP.md`.
+To enable direct quote emails **To:** `info.Windshielddoctorautoglass@gmail.com` and **CC:** `Windshielddoctorautoglass@gmail.com`, set `RESEND_API_KEY` and `RESEND_FROM_EMAIL` in Vercel and redeploy the updated source. The FROM address must use the verified domain `windshielddoctorautoglass.com`; both recipients are set in `api/quote.mjs`. All public website email displays and links use `Windshielddoctorautoglass@gmail.com`. Refer to `VERCEL-EMAIL-SETUP.md`.
 
 The site is plain HTML/CSS/JavaScript — it is not a React/Next.js app and has no frontend build step. The homepage includes only the Classic glass-shatter animation.
 
