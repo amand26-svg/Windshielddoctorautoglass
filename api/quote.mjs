@@ -1,4 +1,4 @@
-/** Windshield Doctor quote endpoint — Vercel Node.js Function (no dependencies). */
+/** Windshield Doctor quote endpoint — Vercel Web Handler (no dependencies). */
 const SHOP_EMAIL = 'info.Windshielddoctorautoglass@gmail.com';
 const SERVICES = new Set([
   'Windshield repair', 'Windshield replacement', 'Side and rear glass',
@@ -16,10 +16,19 @@ function getString(body, key, limit) {
   return value.trim();
 }
 
-export default async function handler(request) {
+async function handleQuote(request) {
     if (request.method !== 'POST') return json({ error: 'Method not allowed.' }, 405);
+    // Vercel can forward the original custom domain through a proxy.
+    // Compare the public Host rather than requiring request.url to use the same hostname.
     const origin = request.headers.get('origin');
-    if (origin && origin !== new URL(request.url).origin) return json({ error: 'Request not permitted.' }, 403);
+    if (origin) {
+      let originHost;
+      try { originHost = new URL(origin).host.toLowerCase(); }
+      catch { return json({ error: 'Request not permitted.' }, 403); }
+      const hosts = [request.headers.get('x-forwarded-host'), request.headers.get('host'), new URL(request.url).host]
+        .filter(Boolean).map(host => host.toLowerCase());
+      if (!hosts.includes(originHost)) return json({ error: 'Request not permitted.' }, 403);
+    }
     if (!request.headers.get('content-type')?.toLowerCase().includes('application/json')) {
       return json({ error: 'Expected JSON request.' }, 415);
     }
@@ -112,7 +121,14 @@ export default async function handler(request) {
         signal: AbortSignal.timeout(10000)
       });
       if (!response.ok) {
-        console.error('Resend rejected a quote email:', response.status);
+        let providerError = {};
+        try { providerError = await response.json(); } catch { /* non-JSON provider error */ }
+        // This appears only in Vercel private function logs, never in the page.
+        console.error('Resend rejected a quote email', {
+          status: response.status,
+          code: providerError.name || 'unknown',
+          message: providerError.message || 'No details returned'
+        });
         return json({ error: 'Email delivery is temporarily unavailable.' }, 502);
       }
       return json({ success: true });
@@ -121,3 +137,9 @@ export default async function handler(request) {
       return json({ error: 'Email delivery is temporarily unavailable.' }, 502);
     }
 }
+
+// Vercel's current Web Handler contract: api/quote.mjs serves /api/quote.
+// A default-exported object with a fetch method receives a standard Request.
+export default {
+  fetch(request) { return handleQuote(request); }
+};
